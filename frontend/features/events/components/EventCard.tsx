@@ -18,6 +18,7 @@ import { InterestedModal } from './InterestedModal';
 import { useMarkInterested } from '../hooks/useMarkInterested';
 import { useAuth } from '@/hooks/useAuth';
 import type { Event } from '@/types';
+import { motion } from 'framer-motion';
 
 interface EventCardProps {
   event: Event;
@@ -39,7 +40,12 @@ export function EventCard({ event }: EventCardProps) {
 
   return (
     <>
-      <div className="group border border-border rounded-lg overflow-hidden bg-card hover:shadow-md transition-all duration-200 flex flex-col">
+      <motion.div
+        layout
+        whileHover={{ y: -4 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+        className="group border border-border/80 rounded-xl overflow-hidden bg-card hover:shadow-lg hover:border-primary/20 transition-all duration-300 flex flex-col"
+      >
         {/* Banner */}
         <div className="relative h-36 overflow-hidden shrink-0">
           {event.bannerImage ? (
@@ -139,7 +145,7 @@ export function EventCard({ event }: EventCardProps) {
               ))}
           </div>
         </div>
-      </div>
+      </motion.div>
 
       <InterestedModal
         open={modalOpen}

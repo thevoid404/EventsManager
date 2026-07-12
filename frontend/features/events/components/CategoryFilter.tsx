@@ -3,6 +3,7 @@
 import { cn } from '@/lib/utils';
 import type { EventCategory } from '@/types';
 import { CATEGORY_OPTIONS } from '../utils';
+import { motion } from 'framer-motion';
 
 interface CategoryFilterProps {
   selected: EventCategory | undefined;
@@ -45,13 +46,20 @@ function FilterPill({
       type="button"
       onClick={onClick}
       className={cn(
-        'px-3 py-1 text-xs font-medium rounded-full border transition-colors',
+        'relative px-3.5 py-1.5 text-xs font-medium rounded-full border transition-colors duration-250 select-none outline-none focus-visible:ring-2 focus-visible:ring-ring',
         active
-          ? 'bg-foreground text-background border-foreground'
-          : 'bg-background text-muted-foreground border-border hover:border-foreground/50 hover:text-foreground',
+          ? 'text-background border-foreground'
+          : 'bg-background text-muted-foreground border-border hover:border-foreground/40 hover:text-foreground',
       )}
     >
-      {label}
+      {active && (
+        <motion.span
+          layoutId="activeCategory"
+          className="absolute inset-0 bg-foreground rounded-full -z-10"
+          transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+        />
+      )}
+      <span className="relative z-10">{label}</span>
     </button>
   );
 }

@@ -1,0 +1,166 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum EventCategory {
+  hackathon
+  workshop
+  seminar
+  competition
+  cultural
+  sports
+  other
+}
+
+enum EventType {
+  online
+  offline
+  hybrid
+}
+
+enum JoinRequestStatus {
+  pending
+  accepted
+  rejected
+}
+
+enum NotificationType {
+  request_received
+  request_accepted
+  request_rejected
+  member_joined
+}
+
+// ─── Models ──────────────────────────────────────────────────────────────────
+
+model User {
+  id         String   @id @default(cuid())
+  name       String
+  email      String   @unique
+  department String
+  password   String
+  avatarUrl  String?
+  createdAt  DateTime @default(now())
+
+  createdEvents   Event[]
+  interests       EventInterest[]
+  teamsLed        Team[]          @relation("TeamLeader")
+  teamMemberships TeamMember[]
+  joinRequests    JoinRequest[]
+  notifications   Notification[]
+
+  @@index([email])
+}
+
+model Event {
+  id                   String        @id @default(cuid())
+  title                String
+  category             EventCategory
+  eventType            EventType
+  description          String
+  registrationDeadline DateTime
+  eventDate            DateTime
+  registrationLink     String?
+  bannerImage          String?
+  createdById          String
+  createdAt            DateTime      @default(now())
+
+  createdBy User            @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  interests EventInterest[]
+  teams     Team[]
+
+  @@index([category])
+  @@index([eventType])
+  @@index([createdById])
+  @@index([registrationDeadline])
+  @@index([eventDate])
+  @@index([createdAt])
+}
+
+model EventInterest {
+  id           String   @id @default(cuid())
+  eventId      String
+  userId       String
+  interestText String
+  createdAt    DateTime @default(now())
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, userId])
+  @@index([eventId])
+  @@index([userId])
+}
+
+model Team {
+  id          String   @id @default(cuid())
+  eventId     String
+  name        String
+  maxMembers  Int
+  lookingFor  String
+  description String
+  leaderId    String
+  whatsapp    String?
+  facebook    String?
+  discord     String?
+  createdAt   DateTime @default(now())
+
+  event        Event         @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  leader       User          @relation("TeamLeader", fields: [leaderId], references: [id], onDelete: Cascade)
+  members      TeamMember[]
+  joinRequests JoinRequest[]
+
+  @@index([eventId])
+  @@index([leaderId])
+}
+
+model TeamMember {
+  id       String   @id @default(cuid())
+  teamId   String
+  userId   String
+  isLeader Boolean  @default(false)
+  joinedAt DateTime @default(now())
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, userId])
+  @@index([teamId])
+  @@index([userId])
+}
+
+model JoinRequest {
+  id           String            @id @default(cuid())
+  teamId       String
+  userId       String
+  introduction String
+  status       JoinRequestStatus @default(pending)
+  createdAt    DateTime          @default(now())
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([teamId, status])
+  @@index([userId])
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  message   String
+  read      Boolean          @default(false)
+  relatedId String?
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, read])
+  @@index([createdAt])
+}

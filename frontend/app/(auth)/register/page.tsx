@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { authService } from '@/services/auth.service';
+import { motion } from 'framer-motion';
 
 // ─── Departments ───────────────────────────────────────────────────────────
 
@@ -100,9 +101,14 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="w-full max-w-[360px]">
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: 'easeOut' }}
+      className="w-full max-w-[360px]"
+    >
       {/* Card */}
-      <div className="border border-border rounded-lg bg-card px-6 py-7 space-y-5">
+      <div className="border border-border/80 rounded-xl bg-card px-6 py-7 space-y-5 shadow-sm hover:shadow-md transition-shadow duration-300">
         <div className="space-y-1">
           <h1 className="text-base font-semibold">Create your account</h1>
           <p className="text-xs text-muted-foreground">
@@ -247,6 +253,6 @@ export default function RegisterPage() {
           Sign in
         </Link>
       </p>
-    </div>
+    </motion.div>
   );
 }

@@ -9,44 +9,44 @@ export const CATEGORY_CONFIG: Record<
   hackathon: {
     label: 'Hackathon',
     gradient: 'from-blue-500 to-indigo-600',
-    badge: 'bg-blue-50 text-blue-700',
-    border: 'border-blue-200',
+    badge: 'bg-blue-500/10 text-blue-400',
+    border: 'border-blue-500/20',
   },
   workshop: {
     label: 'Workshop',
     gradient: 'from-emerald-500 to-teal-600',
-    badge: 'bg-emerald-50 text-emerald-700',
-    border: 'border-emerald-200',
+    badge: 'bg-emerald-500/10 text-emerald-400',
+    border: 'border-emerald-500/20',
   },
   seminar: {
     label: 'Seminar',
     gradient: 'from-violet-500 to-purple-600',
-    badge: 'bg-violet-50 text-violet-700',
-    border: 'border-violet-200',
+    badge: 'bg-violet-500/10 text-violet-400',
+    border: 'border-violet-500/20',
   },
   competition: {
     label: 'Competition',
     gradient: 'from-orange-500 to-amber-600',
-    badge: 'bg-orange-50 text-orange-700',
-    border: 'border-orange-200',
+    badge: 'bg-orange-500/10 text-orange-400',
+    border: 'border-orange-500/20',
   },
   cultural: {
     label: 'Cultural',
     gradient: 'from-pink-500 to-rose-600',
-    badge: 'bg-pink-50 text-pink-700',
-    border: 'border-pink-200',
+    badge: 'bg-pink-500/10 text-pink-400',
+    border: 'border-pink-500/20',
   },
   sports: {
     label: 'Sports',
     gradient: 'from-red-500 to-orange-600',
-    badge: 'bg-red-50 text-red-700',
-    border: 'border-red-200',
+    badge: 'bg-red-500/10 text-red-400',
+    border: 'border-red-500/20',
   },
   other: {
     label: 'Other',
     gradient: 'from-zinc-400 to-zinc-500',
-    badge: 'bg-zinc-100 text-zinc-700',
-    border: 'border-zinc-200',
+    badge: 'bg-zinc-500/10 text-zinc-400',
+    border: 'border-zinc-500/20',
   },
 };
 
@@ -58,18 +58,18 @@ export const EVENT_TYPE_CONFIG: Record<
 > = {
   online: {
     label: 'Online',
-    badge: 'bg-sky-50 text-sky-700',
-    border: 'border-sky-200',
+    badge: 'bg-sky-500/10 text-sky-400',
+    border: 'border-sky-500/20',
   },
   offline: {
     label: 'Offline',
-    badge: 'bg-amber-50 text-amber-700',
-    border: 'border-amber-200',
+    badge: 'bg-amber-500/10 text-amber-400',
+    border: 'border-amber-500/20',
   },
   hybrid: {
     label: 'Hybrid',
-    badge: 'bg-purple-50 text-purple-700',
-    border: 'border-purple-200',
+    badge: 'bg-purple-500/10 text-purple-400',
+    border: 'border-purple-500/20',
   },
 };
 

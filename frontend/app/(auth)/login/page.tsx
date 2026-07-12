@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { authService } from '@/services/auth.service';
+import { motion } from 'framer-motion';
 
 
 // ─── Schema ────────────────────────────────────────────────────────────────
@@ -61,9 +62,14 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="w-full max-w-[340px]">
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: 'easeOut' }}
+      className="w-full max-w-[340px]"
+    >
       {/* Card */}
-      <div className="border border-border rounded-lg bg-card px-6 py-7 space-y-5">
+      <div className="border border-border/80 rounded-xl bg-card px-6 py-7 space-y-5 shadow-sm hover:shadow-md transition-shadow duration-300">
         <div className="space-y-1">
           <h1 className="text-base font-semibold">Sign in to SEU Events</h1>
           <p className="text-xs text-muted-foreground">
@@ -135,6 +141,6 @@ export default function LoginPage() {
           Create an account
         </Link>
       </p>
-    </div>
+    </motion.div>
   );
 }

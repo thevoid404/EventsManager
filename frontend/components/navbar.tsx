@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
+import { useNotifications } from '@/features/notifications/hooks/useNotifications';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
@@ -14,41 +15,73 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Bell, CalendarDays, LogOut, Plus, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 
 const NAV_LINKS = [{ href: '/events', label: 'Events' }];
+
+function NotificationBadge() {
+  const { isAuthenticated } = useAuth();
+  // Using dynamic import or just standard hook since Navbar is a Client Component
+  // We'll conditionally fetch if authenticated inside the hook or just conditionally render it
+  const { unreadCount } = useNotifications();
+
+  if (!isAuthenticated || !unreadCount || unreadCount === 0) return null;
+
+  return (
+    <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground">
+      {unreadCount > 9 ? '9+' : unreadCount}
+    </span>
+  );
+}
 
 export function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border/80 bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
+      {/* Top subtle glow bar */}
+      <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-6 justify-between">
         {/* Logo */}
         <Link
           href="/events"
-          className="flex items-center gap-2 font-semibold text-sm shrink-0"
+          className="flex items-center gap-2 font-bold text-sm shrink-0 tracking-tight text-foreground hover:opacity-85 transition-opacity"
         >
-          <CalendarDays className="h-[18px] w-[18px]" />
-          <span>SEU Events</span>
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm">
+            <CalendarDays className="h-4 w-4" />
+          </div>
+          <span className="bg-gradient-to-r from-foreground via-foreground/90 to-primary/80 bg-clip-text text-transparent">
+            SEU Events
+          </span>
         </Link>
 
         {/* Nav links */}
-        <nav className="flex items-center gap-0.5">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={cn(
-                'text-sm px-3 py-1.5 rounded-md transition-colors',
-                pathname.startsWith(link.href)
-                  ? 'bg-accent text-foreground font-medium'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-accent/60',
-              )}
-            >
-              {link.label}
-            </Link>
-          ))}
+        <nav className="flex items-center gap-1 relative">
+          {NAV_LINKS.map((link) => {
+            const isActive = pathname.startsWith(link.href);
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                  'relative text-sm px-3 py-1.5 rounded-md transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                  isActive
+                    ? 'text-foreground font-medium'
+                    : 'text-muted-foreground hover:text-foreground'
+                )}
+              >
+                {isActive && (
+                  <motion.span
+                    layoutId="activeNav"
+                    className="absolute inset-0 bg-accent rounded-md -z-10"
+                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                  />
+                )}
+                {link.label}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Right side */}
@@ -73,6 +106,7 @@ export function Navbar() {
               >
                 <Link href="/notifications">
                   <Bell className="h-4 w-4" />
+                  <NotificationBadge />
                 </Link>
               </Button>
 

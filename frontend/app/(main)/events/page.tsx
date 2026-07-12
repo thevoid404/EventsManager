@@ -16,6 +16,22 @@ import { EmptyState } from '@/components/empty-state';
 import { ErrorState } from '@/components/error-state';
 import { cn } from '@/lib/utils';
 import type { EventCategory } from '@/types';
+import { motion } from 'framer-motion';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.05,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 15 },
+  show: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 260, damping: 25 } },
+};
 
 type SortOption = 'deadline' | 'eventDate' | 'createdAt';
 
@@ -45,22 +61,30 @@ export default function EventsPage() {
 
   return (
     <div className="space-y-6">
-      {/* Page header */}
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-semibold">Upcoming Events</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            Discover and join university events
-          </p>
+      {/* Page header with a beautiful subtle gradient background card */}
+      <div className="relative overflow-hidden rounded-2xl border border-border/80 bg-gradient-to-r from-primary/5 via-primary/10 to-transparent p-6 sm:p-8">
+        {/* Glow effects */}
+        <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
+        <div className="absolute -left-10 -bottom-10 h-40 w-40 rounded-full bg-indigo-500/5 blur-3xl pointer-events-none" />
+        
+        <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight bg-gradient-to-r from-foreground to-primary/80 bg-clip-text text-transparent">
+              Upcoming Events
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Discover and join exciting events hosted across Southeast University.
+            </p>
+          </div>
+          {isAuthenticated && (
+            <Button asChild size="default" className="gap-1.5 shrink-0 shadow-sm bg-primary text-primary-foreground hover:bg-primary/95 transition-all duration-200">
+              <Link href="/events/create">
+                <Plus className="h-4 w-4" />
+                Create Event
+              </Link>
+            </Button>
+          )}
         </div>
-        {isAuthenticated && (
-          <Button asChild size="sm" className="gap-1.5 shrink-0">
-            <Link href="/events/create">
-              <Plus className="h-3.5 w-3.5" />
-              Create Event
-            </Link>
-          </Button>
-        )}
       </div>
 
       {/* Filters row */}
@@ -121,16 +145,23 @@ export default function EventsPage() {
           }
         />
       ) : (
-        <div className="space-y-4">
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
+          className="space-y-4"
+        >
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {events.map((event) => (
-              <EventCard key={event.id} event={event} />
+              <motion.div key={event.id} variants={itemVariants}>
+                <EventCard event={event} />
+              </motion.div>
             ))}
           </div>
           <p className="text-xs text-muted-foreground text-center pb-2">
             Showing {events.length}{total > events.length ? ` of ${total}` : ''} events
           </p>
-        </div>
+        </motion.div>
       )}
     </div>
   );
