@@ -6,7 +6,8 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "prisma generate && nest build",
+    "prebuild": "node -e \"const fs=require('fs'); ['dist', 'tsconfig.build.tsbuildinfo', 'tsconfig.tsbuildinfo'].forEach(f => fs.rmSync(f, {recursive: true, force: true}))\"",
+    "build": "npm run prebuild && prisma generate && nest build",
     "postinstall": "prisma generate",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
