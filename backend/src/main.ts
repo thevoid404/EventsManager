@@ -9,8 +9,9 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
 
+  const corsOrigin = configService.get<string>('cors.origin');
   app.enableCors({
-    origin: configService.get<string>('cors.origin'),
+    origin: corsOrigin === '*' ? true : corsOrigin?.split(',').map((o) => o.trim()) || true,
     credentials: true,
   });
 
@@ -26,7 +27,8 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
 
   const port = configService.get<number>('port') ?? 3001;
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
+  console.log(`Application is running on port ${port} (0.0.0.0)`);
 }
 
 bootstrap();
