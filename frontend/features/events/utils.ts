@@ -1,52 +1,59 @@
 import type { EventCategory, EventType } from '@/types';
 
-// ─── Category config ───────────────────────────────────────────────────────
+// ─── Category config: Obsidian Editorial ───────────────────────────────────
 
 export const CATEGORY_CONFIG: Record<
   EventCategory,
-  { label: string; gradient: string; badge: string; border: string }
+  { label: string; tag: string; badge: string; border: string; accent: string }
 > = {
   hackathon: {
     label: 'Hackathon',
-    gradient: 'from-blue-500 to-indigo-600',
-    badge: 'bg-blue-500/10 text-blue-400',
-    border: 'border-blue-500/20',
-  },
-  workshop: {
-    label: 'Workshop',
-    gradient: 'from-emerald-500 to-teal-600',
-    badge: 'bg-emerald-500/10 text-emerald-400',
-    border: 'border-emerald-500/20',
-  },
-  seminar: {
-    label: 'Seminar',
-    gradient: 'from-violet-500 to-purple-600',
-    badge: 'bg-violet-500/10 text-violet-400',
-    border: 'border-violet-500/20',
+    tag: 'HACKATHON // BUILD',
+    badge: 'bg-[#FF4D00]/10 text-[#FF4D00]',
+    border: 'border-[#FF4D00]/30',
+    accent: '#FF4D00',
   },
   competition: {
     label: 'Competition',
-    gradient: 'from-orange-500 to-amber-600',
-    badge: 'bg-orange-500/10 text-orange-400',
-    border: 'border-orange-500/20',
+    tag: 'COMPETITION // ARENA',
+    badge: 'bg-[#C8FF00]/10 text-[#C8FF00]',
+    border: 'border-[#C8FF00]/30',
+    accent: '#C8FF00',
+  },
+  workshop: {
+    label: 'Workshop',
+    tag: 'WORKSHOP // LAB',
+    badge: 'bg-white/10 text-[#F4F4F0]',
+    border: 'border-white/20',
+    accent: '#F4F4F0',
+  },
+  seminar: {
+    label: 'Seminar',
+    tag: 'SEMINAR // DISPATCH',
+    badge: 'bg-[#8A8A93]/15 text-[#8A8A93]',
+    border: 'border-white/10',
+    accent: '#8A8A93',
   },
   cultural: {
     label: 'Cultural',
-    gradient: 'from-pink-500 to-rose-600',
-    badge: 'bg-pink-500/10 text-pink-400',
-    border: 'border-pink-500/20',
+    tag: 'CULTURAL // FEST',
+    badge: 'bg-[#FF4D00]/15 text-[#FF4D00]',
+    border: 'border-[#FF4D00]/30',
+    accent: '#FF4D00',
   },
   sports: {
     label: 'Sports',
-    gradient: 'from-red-500 to-orange-600',
-    badge: 'bg-red-500/10 text-red-400',
-    border: 'border-red-500/20',
+    tag: 'SPORTS // LEAGUE',
+    badge: 'bg-[#C8FF00]/15 text-[#C8FF00]',
+    border: 'border-[#C8FF00]/30',
+    accent: '#C8FF00',
   },
   other: {
     label: 'Other',
-    gradient: 'from-zinc-400 to-zinc-500',
-    badge: 'bg-zinc-500/10 text-zinc-400',
-    border: 'border-zinc-500/20',
+    tag: 'CAMPUS // GENERAL',
+    badge: 'bg-white/5 text-[#8A8A93]',
+    border: 'border-white/10',
+    accent: '#8A8A93',
   },
 };
 
@@ -58,18 +65,18 @@ export const EVENT_TYPE_CONFIG: Record<
 > = {
   online: {
     label: 'Online',
-    badge: 'bg-sky-500/10 text-sky-400',
-    border: 'border-sky-500/20',
+    badge: 'bg-white/5 text-[#8A8A93]',
+    border: 'border-white/10',
   },
   offline: {
-    label: 'Offline',
-    badge: 'bg-amber-500/10 text-amber-400',
-    border: 'border-amber-500/20',
+    label: 'On-Campus',
+    badge: 'bg-[#FF4D00]/10 text-[#FF4D00]',
+    border: 'border-[#FF4D00]/20',
   },
   hybrid: {
     label: 'Hybrid',
-    badge: 'bg-purple-500/10 text-purple-400',
-    border: 'border-purple-500/20',
+    badge: 'bg-[#C8FF00]/10 text-[#C8FF00]',
+    border: 'border-[#C8FF00]/20',
   },
 };
 
@@ -77,9 +84,9 @@ export const EVENT_TYPE_CONFIG: Record<
 
 export const CATEGORY_OPTIONS: { value: EventCategory; label: string }[] = [
   { value: 'hackathon', label: 'Hackathon' },
+  { value: 'competition', label: 'Competition' },
   { value: 'workshop', label: 'Workshop' },
   { value: 'seminar', label: 'Seminar' },
-  { value: 'competition', label: 'Competition' },
   { value: 'cultural', label: 'Cultural' },
   { value: 'sports', label: 'Sports' },
   { value: 'other', label: 'Other' },
@@ -87,6 +94,6 @@ export const CATEGORY_OPTIONS: { value: EventCategory; label: string }[] = [
 
 export const EVENT_TYPE_OPTIONS: { value: EventType; label: string }[] = [
   { value: 'online', label: 'Online' },
-  { value: 'offline', label: 'Offline' },
+  { value: 'offline', label: 'On-Campus' },
   { value: 'hybrid', label: 'Hybrid' },
 ];

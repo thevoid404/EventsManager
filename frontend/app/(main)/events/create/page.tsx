@@ -13,11 +13,12 @@ import {
   ImagePlus,
   Loader2,
   X,
+  Sparkles,
+  Calendar,
+  Layers,
+  Link2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -25,11 +26,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
 import { useCreateEvent } from '@/features/events/hooks/useCreateEvent';
 import { CATEGORY_OPTIONS, EVENT_TYPE_OPTIONS } from '@/features/events/utils';
-
-// ─── Schema ────────────────────────────────────────────────────────────────
 
 const createEventSchema = z
   .object({
@@ -39,7 +37,7 @@ const createEventSchema = z
       .max(100, 'Title is too long'),
     category: z.enum(
       ['hackathon', 'workshop', 'seminar', 'competition', 'cultural', 'sports', 'other'],
-      { error: 'Please select a category' },
+      { error: 'Please select a category' }
     ),
     eventType: z.enum(['online', 'offline', 'hybrid'], {
       error: 'Please select an event type',
@@ -56,7 +54,7 @@ const createEventSchema = z
       .optional()
       .refine(
         (val) => !val || val.startsWith('http'),
-        'Enter a valid URL (must start with http:// or https://)',
+        'Enter a valid URL (must start with http:// or https://)'
       ),
   })
   .refine(
@@ -67,18 +65,15 @@ const createEventSchema = z
     {
       message: 'Event date must be after the registration deadline',
       path: ['eventDate'],
-    },
+    }
   );
 
 type CreateEventFormValues = z.infer<typeof createEventSchema>;
-
-// ─── Page ──────────────────────────────────────────────────────────────────
 
 export default function CreateEventPage() {
   const router = useRouter();
   const { mutateAsync, isPending } = useCreateEvent();
 
-  // Banner image state (handled outside RHF)
   const [bannerPreview, setBannerPreview] = useState<string | null>(null);
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -115,58 +110,69 @@ export default function CreateEventPage() {
         bannerImage: bannerFile ?? undefined,
         registrationLink: data.registrationLink || undefined,
       });
-      toast.success('Event created successfully!');
+      toast.success('Dispatch broadcasted successfully!');
       router.push(`/events/${event.id}`);
     } catch {
-      // error toast already shown by hook
+      // error toast already handled
     }
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      {/* Back */}
+    <div className="max-w-3xl mx-auto space-y-6 pb-16">
+      {/* Back Link */}
       <Link
         href="/events"
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+        className="inline-flex items-center gap-2 text-xs font-mono text-[#8A8A93] hover:text-[#FF4D00] transition-colors"
       >
-        <ArrowLeft className="h-3.5 w-3.5" />
-        Back to Events
+        <ArrowLeft className="w-3.5 h-3.5" />
+        BACK TO CAMPUS DISPATCH
       </Link>
 
       {/* Header */}
-      <div>
-        <h1 className="text-xl font-semibold">Create Event</h1>
-        <p className="text-sm text-muted-foreground mt-0.5">
-          Fill in the details to post a new university event.
+      <div className="space-y-1">
+        <div className="text-[10px] font-mono tracking-widest text-[#FF4D00] uppercase font-bold flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D00]" />
+          NEW TRANSMISSION // BROADCAST DISPATCH
+        </div>
+        <h1 className="text-2xl sm:text-3xl font-heading font-black tracking-tight text-[#F4F4F0] uppercase">
+          HOST CAMPUS EVENT
+        </h1>
+        <p className="text-xs text-[#8A8A93]">
+          Publish a new hackathon, competition, workshop or seminar for Southeast University.
         </p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6">
-        {/* ── Basic Info ── */}
-        <section className="space-y-4">
-          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-            Basic Info
-          </h2>
+        {/* Basic Info */}
+        <div className="rounded-xl bg-[#111114] border border-white/10 p-6 space-y-4 shadow-lg">
+          <div className="text-xs font-mono text-[#8A8A93] uppercase tracking-wider flex items-center gap-2">
+            <Sparkles className="w-3.5 h-3.5 text-[#FF4D00]" />
+            DISPATCH SPECIFICATIONS
+          </div>
 
           {/* Title */}
           <div className="space-y-1.5">
-            <Label htmlFor="ev-title">Event Title</Label>
-            <Input
+            <label htmlFor="ev-title" className="text-xs font-mono uppercase text-[#8A8A93]">
+              Event Title
+            </label>
+            <input
               id="ev-title"
-              placeholder="e.g. SEU Hackathon 2025"
+              placeholder="e.g. SEU AI Hackathon 2026 // Spring Edition"
               autoFocus
               {...register('title')}
-              aria-invalid={!!errors.title}
+              className="w-full h-10 px-3 text-xs font-mono bg-[#18181E] border border-white/10 rounded-md text-[#F4F4F0] placeholder-[#8A8A93]/50 focus:outline-none focus:border-[#FF4D00] transition-colors"
             />
             {errors.title && (
-              <p className="text-xs text-destructive">{errors.title.message}</p>
+              <p className="text-[11px] font-mono text-[#FF2E4C]">{errors.title.message}</p>
             )}
           </div>
 
-          {/* Category + Event Type (2-col) */}
+          {/* Category + Type */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <Label htmlFor="ev-category">Category</Label>
+              <label htmlFor="ev-category" className="text-xs font-mono uppercase text-[#8A8A93]">
+                Category
+              </label>
               <Select
                 onValueChange={(val) =>
                   setValue('category', val as CreateEventFormValues['category'], {
@@ -175,29 +181,26 @@ export default function CreateEventPage() {
                 }
                 value={watch('category')}
               >
-                <SelectTrigger
-                  id="ev-category"
-                  aria-invalid={!!errors.category}
-                >
-                  <SelectValue placeholder="Select category" />
+                <SelectTrigger id="ev-category" className="h-10 text-xs font-mono bg-[#18181E] border-white/10 text-[#F4F4F0]">
+                  <SelectValue placeholder="Select Category" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-[#141418] border-white/15 text-[#F4F4F0]">
                   {CATEGORY_OPTIONS.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                      {opt.label}
+                    <SelectItem key={opt.value} value={opt.value} className="text-xs font-mono">
+                      {opt.label.toUpperCase()}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
               {errors.category && (
-                <p className="text-xs text-destructive">
-                  {errors.category.message}
-                </p>
+                <p className="text-[11px] font-mono text-[#FF2E4C]">{errors.category.message}</p>
               )}
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="ev-type">Event Type</Label>
+              <label htmlFor="ev-type" className="text-xs font-mono uppercase text-[#8A8A93]">
+                Mode / Venue
+              </label>
               <Select
                 onValueChange={(val) =>
                   setValue('eventType', val as CreateEventFormValues['eventType'], {
@@ -206,150 +209,130 @@ export default function CreateEventPage() {
                 }
                 value={watch('eventType')}
               >
-                <SelectTrigger id="ev-type" aria-invalid={!!errors.eventType}>
-                  <SelectValue placeholder="Select type" />
+                <SelectTrigger id="ev-type" className="h-10 text-xs font-mono bg-[#18181E] border-white/10 text-[#F4F4F0]">
+                  <SelectValue placeholder="Select Mode" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-[#141418] border-white/15 text-[#F4F4F0]">
                   {EVENT_TYPE_OPTIONS.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                      {opt.label}
+                    <SelectItem key={opt.value} value={opt.value} className="text-xs font-mono">
+                      {opt.label.toUpperCase()}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
               {errors.eventType && (
-                <p className="text-xs text-destructive">
-                  {errors.eventType.message}
-                </p>
+                <p className="text-[11px] font-mono text-[#FF2E4C]">{errors.eventType.message}</p>
               )}
             </div>
           </div>
 
           {/* Description */}
           <div className="space-y-1.5">
-            <Label htmlFor="ev-description">Description</Label>
-            <Textarea
+            <label htmlFor="ev-description" className="text-xs font-mono uppercase text-[#8A8A93]">
+              Description &amp; Guidelines
+            </label>
+            <textarea
               id="ev-description"
-              placeholder="Describe the event, what participants can expect, requirements, prizes, etc."
               rows={5}
+              placeholder="Detail eligibility, event rules, prizes, roadmap, and requirements..."
               {...register('description')}
-              aria-invalid={!!errors.description}
+              className="w-full p-3 text-xs font-sans bg-[#18181E] border border-white/10 rounded-md text-[#F4F4F0] placeholder-[#8A8A93]/50 focus:outline-none focus:border-[#FF4D00] transition-colors"
             />
             {errors.description && (
-              <p className="text-xs text-destructive">
-                {errors.description.message}
-              </p>
+              <p className="text-[11px] font-mono text-[#FF2E4C]">{errors.description.message}</p>
             )}
           </div>
-        </section>
+        </div>
 
-        <Separator />
-
-        {/* ── Dates ── */}
-        <section className="space-y-4">
-          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-            Dates
-          </h2>
+        {/* Dates */}
+        <div className="rounded-xl bg-[#111114] border border-white/10 p-6 space-y-4 shadow-lg">
+          <div className="text-xs font-mono text-[#8A8A93] uppercase tracking-wider flex items-center gap-2">
+            <Calendar className="w-3.5 h-3.5 text-[#C8FF00]" />
+            TIMELINE &amp; DEADLINES
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <Label htmlFor="ev-deadline">Registration Deadline</Label>
-              <Input
+              <label htmlFor="ev-deadline" className="text-xs font-mono uppercase text-[#8A8A93]">
+                Registration Closes
+              </label>
+              <input
                 id="ev-deadline"
                 type="date"
                 {...register('registrationDeadline')}
-                aria-invalid={!!errors.registrationDeadline}
+                className="w-full h-10 px-3 text-xs font-mono bg-[#18181E] border border-white/10 rounded-md text-[#F4F4F0] focus:outline-none focus:border-[#FF4D00]"
               />
               {errors.registrationDeadline && (
-                <p className="text-xs text-destructive">
-                  {errors.registrationDeadline.message}
-                </p>
+                <p className="text-[11px] font-mono text-[#FF2E4C]">{errors.registrationDeadline.message}</p>
               )}
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="ev-date">Event Date</Label>
-              <Input
+              <label htmlFor="ev-date" className="text-xs font-mono uppercase text-[#8A8A93]">
+                Event Day
+              </label>
+              <input
                 id="ev-date"
                 type="date"
                 {...register('eventDate')}
-                aria-invalid={!!errors.eventDate}
+                className="w-full h-10 px-3 text-xs font-mono bg-[#18181E] border border-white/10 rounded-md text-[#F4F4F0] focus:outline-none focus:border-[#FF4D00]"
               />
               {errors.eventDate && (
-                <p className="text-xs text-destructive">
-                  {errors.eventDate.message}
-                </p>
+                <p className="text-[11px] font-mono text-[#FF2E4C]">{errors.eventDate.message}</p>
               )}
             </div>
           </div>
-        </section>
+        </div>
 
-        <Separator />
+        {/* Registration Link & Banner */}
+        <div className="rounded-xl bg-[#111114] border border-white/10 p-6 space-y-4 shadow-lg">
+          <div className="text-xs font-mono text-[#8A8A93] uppercase tracking-wider flex items-center gap-2">
+            <Link2 className="w-3.5 h-3.5 text-[#FF4D00]" />
+            MEDIA &amp; EXTERNAL FORMS
+          </div>
 
-        {/* ── Links & Media ── */}
-        <section className="space-y-4">
-          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-            Links &amp; Media
-          </h2>
-
-          {/* Registration link */}
           <div className="space-y-1.5">
-            <Label htmlFor="ev-link">
-              Registration Link{' '}
-              <span className="text-muted-foreground font-normal">(optional)</span>
-            </Label>
-            <Input
+            <label htmlFor="ev-link" className="text-xs font-mono uppercase text-[#8A8A93]">
+              Official Form URL (Optional)
+            </label>
+            <input
               id="ev-link"
               type="url"
               placeholder="https://forms.google.com/..."
               {...register('registrationLink')}
-              aria-invalid={!!errors.registrationLink}
+              className="w-full h-10 px-3 text-xs font-mono bg-[#18181E] border border-white/10 rounded-md text-[#F4F4F0] placeholder-[#8A8A93]/50 focus:outline-none focus:border-[#FF4D00]"
             />
             {errors.registrationLink && (
-              <p className="text-xs text-destructive">
-                {errors.registrationLink.message}
-              </p>
+              <p className="text-[11px] font-mono text-[#FF2E4C]">{errors.registrationLink.message}</p>
             )}
           </div>
 
-          {/* Banner image */}
           <div className="space-y-1.5">
-            <Label>
-              Banner Image{' '}
-              <span className="text-muted-foreground font-normal">(optional)</span>
-            </Label>
-
+            <label className="text-xs font-mono uppercase text-[#8A8A93]">
+              Cover Banner (Optional — Procedural Art Generated if Empty)
+            </label>
             {bannerPreview ? (
-              <div className="relative h-44 rounded-lg overflow-hidden border border-border">
-                <Image
-                  src={bannerPreview}
-                  alt="Banner preview"
-                  fill
-                  className="object-cover"
-                />
-                <Button
+              <div className="relative h-44 rounded-lg overflow-hidden border border-white/15">
+                <Image src={bannerPreview} alt="Preview" fill className="object-cover" />
+                <button
                   type="button"
-                  variant="secondary"
-                  size="icon"
-                  className="absolute top-2 right-2 h-7 w-7 shadow"
                   onClick={removeBanner}
-                  aria-label="Remove banner"
+                  className="absolute top-2 right-2 p-1.5 rounded-full bg-[#09090B]/80 text-[#FF2E4C] border border-[#FF2E4C]/40"
                 >
-                  <X className="h-3.5 w-3.5" />
-                </Button>
+                  <X className="w-4 h-4" />
+                </button>
               </div>
             ) : (
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="flex flex-col items-center justify-center w-full h-32 rounded-lg border-2 border-dashed border-border hover:border-foreground/40 transition-colors text-muted-foreground hover:text-foreground"
+                className="w-full h-32 rounded-lg border-2 border-dashed border-white/10 hover:border-[#FF4D00]/50 bg-[#18181E]/50 flex flex-col items-center justify-center gap-2 text-xs font-mono text-[#8A8A93] hover:text-[#F4F4F0] transition-colors"
               >
-                <ImagePlus className="h-6 w-6 mb-1.5" />
-                <span className="text-xs">Click to upload banner image</span>
-                <span className="text-xs opacity-60 mt-0.5">PNG, JPG up to 5MB</span>
+                <ImagePlus className="w-6 h-6 text-[#FF4D00]" />
+                <span>UPLOAD CUSTOM BANNER IMAGE</span>
+                <span className="text-[10px] text-[#8A8A93]/60">PNG, JPG UP TO 5MB</span>
               </button>
             )}
-
             <input
               ref={fileInputRef}
               type="file"
@@ -358,24 +341,19 @@ export default function CreateEventPage() {
               onChange={handleImageChange}
             />
           </div>
-        </section>
+        </div>
 
-        <Separator />
-
-        {/* Submit */}
-        <div className="flex items-center gap-3 justify-end pb-4">
-          <Button asChild variant="ghost" type="button">
+        {/* Action Buttons */}
+        <div className="flex items-center justify-end gap-3 pt-2">
+          <Button asChild variant="outline" className="font-mono text-xs uppercase border-white/10 bg-[#18181E] text-[#F4F4F0]">
             <Link href="/events">Cancel</Link>
           </Button>
-          <Button type="submit" disabled={isPending} className="min-w-[120px]">
-            {isPending ? (
-              <>
-                <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
-                Creating…
-              </>
-            ) : (
-              'Create Event'
-            )}
+          <Button
+            type="submit"
+            disabled={isPending}
+            className="h-10 px-6 font-mono text-xs uppercase tracking-wider bg-[#FF4D00] text-white hover:bg-[#FF4D00]/90 font-bold gap-2 shadow-[0_4px_20px_rgba(255,77,0,0.3)]"
+          >
+            {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'BROADCAST DISPATCH'}
           </Button>
         </div>
       </form>

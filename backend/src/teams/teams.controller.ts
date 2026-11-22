@@ -1,5 +1,16 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { Public } from '../common/decorators/public.decorator';
+import { OptionalJwtAuthGuard } from '../common/guards/optional-jwt-auth.guard';
 import { AuthenticatedUser } from '../common/interfaces/authenticated-user.interface';
 import { CreateJoinRequestDto } from './dto/create-join-request.dto';
 import { CreateTeamDto } from './dto/create-team.dto';
@@ -9,12 +20,14 @@ import { TeamsService } from './teams.service';
 export class EventTeamsController {
   constructor(private readonly teamsService: TeamsService) {}
 
+  @Public()
+  @UseGuards(OptionalJwtAuthGuard)
   @Get()
   findByEvent(
     @Param('eventId') eventId: string,
-    @CurrentUser() user: AuthenticatedUser,
+    @Req() req: { user?: AuthenticatedUser },
   ) {
-    return this.teamsService.findByEvent(eventId, user);
+    return this.teamsService.findByEvent(eventId, req.user);
   }
 
   @Post()
@@ -31,12 +44,14 @@ export class EventTeamsController {
 export class TeamsController {
   constructor(private readonly teamsService: TeamsService) {}
 
+  @Public()
+  @UseGuards(OptionalJwtAuthGuard)
   @Get(':teamId')
   findOne(
     @Param('teamId') teamId: string,
-    @CurrentUser() user: AuthenticatedUser,
+    @Req() req: { user?: AuthenticatedUser },
   ) {
-    return this.teamsService.findOne(teamId, user);
+    return this.teamsService.findOne(teamId, req.user);
   }
 
   @Post(':teamId/join-requests')

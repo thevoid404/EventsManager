@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { CalendarDays } from 'lucide-react';
+import { ArrowLeft, Calendar } from 'lucide-react';
+import { AuthShowcase } from '@/features/auth/components/auth-showcase';
 
 export const metadata: Metadata = {
-  title: 'Authentication',
+  title: 'Authentication // SEU Events',
 };
 
 export default function AuthLayout({
@@ -12,27 +13,38 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center bg-background px-4 py-12 overflow-hidden">
-      {/* Decorative background grid pattern and blobs */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(99,102,241,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(99,102,241,0.02)_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none" />
-      <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] rounded-full bg-indigo-500/10 blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-[350px] h-[350px] rounded-full bg-violet-500/10 blur-[100px] pointer-events-none" />
+    <div className="min-h-screen flex w-full bg-[#09090B] text-[#F4F4F0] overflow-x-hidden">
+      {/* Left Pane (Desktop Showcase) */}
+      <AuthShowcase />
 
-      {/* Logo */}
-      <Link
-        href="/events"
-        className="relative z-10 flex items-center gap-2 mb-8 text-foreground hover:opacity-85 transition-opacity"
-      >
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary shadow-md shadow-primary/10">
-          <CalendarDays className="h-5 w-5 text-primary-foreground" />
+      {/* Right Pane (Auth Forms) */}
+      <div className="relative flex-1 flex flex-col justify-between p-6 sm:p-12 overflow-y-auto">
+        {/* Top Header / Back Link */}
+        <div className="flex items-center justify-between w-full max-w-md mx-auto">
+          <Link
+            href="/events"
+            className="inline-flex items-center gap-2 text-xs font-mono text-[#8A8A93] hover:text-[#FF4D00] transition-colors"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            RETURN TO CAMPUS DISPATCH
+          </Link>
+
+          <div className="lg:hidden flex items-center gap-2">
+            <div className="w-6 h-6 rounded bg-[#FF4D00] flex items-center justify-center text-white text-xs font-bold font-mono">
+              SEU
+            </div>
+          </div>
         </div>
-        <span className="font-bold text-lg tracking-tight bg-gradient-to-r from-foreground to-primary/80 bg-clip-text text-transparent">
-          SEU Events
-        </span>
-      </Link>
 
-      <div className="relative z-10 w-full flex justify-center">
-        {children}
+        {/* Form Container */}
+        <div className="my-auto py-8 w-full flex justify-center">
+          {children}
+        </div>
+
+        {/* Footer */}
+        <div className="w-full max-w-md mx-auto text-center text-[10px] font-mono text-[#8A8A93] border-t border-white/5 pt-4">
+          <span>SECURED UNIVERSITY GATEWAY // @SEU.EDU.BD</span>
+        </div>
       </div>
     </div>
   );

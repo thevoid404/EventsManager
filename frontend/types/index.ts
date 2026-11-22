@@ -41,12 +41,17 @@ export interface Event {
   registrationDeadline: string; // ISO date string
   eventDate: string;            // ISO date string
   registrationLink?: string;
-  bannerImage?: string;
-  interestedCount: number;
-  teamCount: number;
+  bannerImage?: string | null;
+  interestedCount?: number;
+  teamCount?: number;
+  _count?: {
+    interests: number;
+    teams: number;
+  };
   createdAt: string;
   createdBy: User;
-  isInterested?: boolean;       // resolved for current user on backend
+  isInterested?: boolean | null; // resolved for current user on backend
+  teams?: Team[];
 }
 
 export interface CreateEventInput {

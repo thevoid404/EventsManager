@@ -43,6 +43,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
         error = responseBody.error;
       }
+    } else {
+      console.error('Unhandled exception in HttpExceptionFilter:', exception);
     }
 
     const body: ApiErrorResponse = {

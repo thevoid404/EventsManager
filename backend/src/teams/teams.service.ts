@@ -167,32 +167,35 @@ export class TeamsService {
     }
 
     // Create team and add leader as first member in a transaction
-    const team = await this.prisma.$transaction(async (tx) => {
-      const newTeam = await tx.team.create({
-        data: {
-          eventId,
-          name: dto.name,
-          maxMembers: dto.maxMembers,
-          lookingFor: dto.lookingFor,
-          description: dto.description,
-          leaderId: user.id,
-          whatsapp: dto.whatsapp,
-          facebook: dto.facebook,
-          discord: dto.discord,
-        },
-      });
+    const team = await this.prisma.$transaction(
+      async (tx) => {
+        const newTeam = await tx.team.create({
+          data: {
+            eventId,
+            name: dto.name,
+            maxMembers: dto.maxMembers,
+            lookingFor: dto.lookingFor,
+            description: dto.description,
+            leaderId: user.id,
+            whatsapp: dto.whatsapp,
+            facebook: dto.facebook,
+            discord: dto.discord,
+          },
+        });
 
-      // Add leader as the first team member
-      await tx.teamMember.create({
-        data: {
-          teamId: newTeam.id,
-          userId: user.id,
-          isLeader: true,
-        },
-      });
+        // Add leader as the first team member
+        await tx.teamMember.create({
+          data: {
+            teamId: newTeam.id,
+            userId: user.id,
+            isLeader: true,
+          },
+        });
 
-      return newTeam;
-    });
+        return newTeam;
+      },
+      { timeout: 15000, maxWait: 15000 },
+    );
 
     // Return full team details
     return this.prisma.team.findUnique({
@@ -367,23 +370,26 @@ export class TeamsService {
     }
 
     // Accept request and add member in a transaction
-    await this.prisma.$transaction(async (tx) => {
-      await tx.joinRequest.update({
-        where: { id: requestId },
-        data: { status: 'accepted' },
-      });
+    await this.prisma.$transaction(
+      async (tx) => {
+        await tx.joinRequest.update({
+          where: { id: requestId },
+          data: { status: 'accepted' },
+        });
 
-      await tx.teamMember.create({
-        data: {
-          teamId,
-          userId: request.userId,
-          isLeader: false,
-        },
-      });
+        await tx.teamMember.create({
+          data: {
+            teamId,
+            userId: request.userId,
+            isLeader: false,
+          },
+        });
 
-      // Reject all other pending requests from the same user in the same event
-      // (optional cleanup - so they're not dangling)
-    });
+        // Reject all other pending requests from the same user in the same event
+        // (optional cleanup - so they're not dangling)
+      },
+      { timeout: 15000, maxWait: 15000 },
+    );
 
     // Notify the requester
     const leaderUser = await this.prisma.user.findUnique({

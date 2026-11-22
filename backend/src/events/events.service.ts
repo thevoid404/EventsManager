@@ -78,7 +78,7 @@ export class EventsService {
     };
     const orderBy = orderByMap[sortBy] ?? { createdAt: 'desc' };
 
-    const [events, total] = await this.prisma.$transaction([
+    const [events, total] = await Promise.all([
       this.prisma.event.findMany({
         where,
         select: eventListSelect,

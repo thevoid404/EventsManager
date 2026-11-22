@@ -14,14 +14,14 @@ export function CategoryFilter({ selected, onChange }: CategoryFilterProps) {
   return (
     <div className="flex items-center gap-1.5 flex-wrap">
       <FilterPill
-        label="All"
+        label="ALL TRACKS"
         active={!selected}
         onClick={() => onChange(undefined)}
       />
       {CATEGORY_OPTIONS.map((opt) => (
         <FilterPill
           key={opt.value}
-          label={opt.label}
+          label={opt.label.toUpperCase()}
           active={selected === opt.value}
           onClick={() =>
             onChange(selected === opt.value ? undefined : opt.value)
@@ -46,16 +46,16 @@ function FilterPill({
       type="button"
       onClick={onClick}
       className={cn(
-        'relative px-3.5 py-1.5 text-xs font-medium rounded-full border transition-colors duration-250 select-none outline-none focus-visible:ring-2 focus-visible:ring-ring',
+        'relative px-3 py-1.5 text-[11px] font-mono tracking-wider font-semibold rounded-md border transition-all duration-200 select-none outline-none',
         active
-          ? 'text-background border-foreground'
-          : 'bg-background text-muted-foreground border-border hover:border-foreground/40 hover:text-foreground',
+          ? 'text-white border-[#FF4D00]'
+          : 'bg-[#111114] text-[#8A8A93] border-white/8 hover:border-white/20 hover:text-[#F4F4F0]'
       )}
     >
       {active && (
         <motion.span
-          layoutId="activeCategory"
-          className="absolute inset-0 bg-foreground rounded-full -z-10"
+          layoutId="activeCategoryPill"
+          className="absolute inset-0 bg-[#FF4D00] rounded-md -z-10 shadow-[0_0_12px_rgba(255,77,0,0.5)]"
           transition={{ type: 'spring', stiffness: 380, damping: 30 }}
         />
       )}
